@@ -64,10 +64,15 @@ namespace ShutterExposure.EditorScripts
             doorMesh.transform.localPosition = new Vector3(0.55f, 1.25f, 0f); // Pivotar desde la bisagra
             doorMesh.transform.localScale = new Vector3(1.1f, 2.5f, 0.1f);
 
-            var doorScript = doorMesh.AddComponent<DoorInteractable>();
-            SerializedObject doorSO = new SerializedObject(doorScript);
-            doorSO.FindProperty("doorHinge").objectReferenceValue = doorFrame.transform;
-            doorSO.ApplyModifiedProperties();
+            var doorType = System.Type.GetType("ShutterExposure.Interaction.DoorInteractable, Assembly-CSharp");
+            if (doorType != null)
+            {
+                var doorComp = doorMesh.AddComponent(doorType);
+                SerializedObject doorSO = new SerializedObject(doorComp);
+                var hingeProp = doorSO.FindProperty("doorHinge");
+                if (hingeProp != null) hingeProp.objectReferenceValue = doorFrame.transform;
+                doorSO.ApplyModifiedProperties();
+            }
 
             // 6. Batería Interactiva con Escalación (Rúbrica: Escalación)
             GameObject batteryObj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
