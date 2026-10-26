@@ -10,7 +10,7 @@ namespace ShutterExposure.Interaction
     /// Cumple con el criterio de la rubrica: '1 Objeto Estado (Rotacion)'.
     /// Rota dinamicamente sobre su eje y emite ruido audible para El Acechador al abrirse.
     /// </summary>
-    public class DoorInteractable : MonoBehaviour, IInteractable
+    public class HingeDoor : MonoBehaviour, IInteractable
     {
         [Header("Configuracion de Interaccion")]
         [SerializeField] private float holdDuration = 1.0f;
@@ -34,6 +34,13 @@ namespace ShutterExposure.Interaction
         public string InteractionPrompt => _isOpen ? closePrompt : openPrompt;
         public float HoldDuration => holdDuration;
         public bool IsOpen => _isOpen;
+
+        public void ConfigureHinge(Transform hinge)
+        {
+            doorHinge = hinge;
+            _closedRotation = doorHinge.localRotation;
+            _openRotation = _closedRotation * Quaternion.Euler(0f, openAngle, 0f);
+        }
 
         private void Awake()
         {
