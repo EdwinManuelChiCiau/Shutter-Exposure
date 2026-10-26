@@ -13,7 +13,7 @@ namespace ShutterExposure.Interaction
     {
         [Header("Configuración de Raycast")]
         [SerializeField] private Transform cameraTransform;
-        [SerializeField] private float rayDistance = 2.4f;
+        [SerializeField] private float rayDistance = 3.5f;
         [SerializeField] private LayerMask interactableMask = ~0;
 
         private IInteractable _currentInteractable;
