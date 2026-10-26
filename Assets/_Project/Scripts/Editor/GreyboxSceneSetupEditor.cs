@@ -16,7 +16,8 @@ namespace ShutterExposure.EditorScripts
     /// </summary>
     public static class GreyboxSceneSetupEditor
     {
-        [MenuItem("Shutter Exposure/Configurar Sala Greybox de Prueba", false, 10)]
+        // Herramienta de configuración de sala Greybox
+        [MenuItem("Shutter Exposure/Configurar Sala Greybox de Prueba", false, 1)]
         public static void SetupGreyboxRoom()
         {
             // 1. Contenedores principales
@@ -52,7 +53,8 @@ namespace ShutterExposure.EditorScripts
             doorMesh.transform.localPosition = new Vector3(0.55f, 1.25f, 0f); // Desplazado para pivotar desde la bisagra
             doorMesh.transform.localScale = new Vector3(1.1f, 2.5f, 0.1f);
 
-            var doorScript = doorFrame.AddComponent<DoorInteractable>();
+            var doorType = System.Type.GetType("ShutterExposure.Interaction.DoorInteractable, Assembly-CSharp");
+            if (doorType != null) doorFrame.AddComponent(doorType);
             Undo.RegisterCreatedObjectUndo(doorFrame, "Create Door");
 
             // 5. Batería Interactiva con Escalación (Rúbrica: Escalación)
@@ -61,7 +63,8 @@ namespace ShutterExposure.EditorScripts
             batteryObj.transform.parent = envRoot.transform;
             batteryObj.transform.position = new Vector3(-2.5f, 0.4f, 2.5f);
             batteryObj.transform.localScale = new Vector3(0.2f, 0.35f, 0.2f);
-            batteryObj.AddComponent<BatteryPickup>();
+            var batteryType = System.Type.GetType("ShutterExposure.Interaction.BatteryPickup, Assembly-CSharp");
+            if (batteryType != null) batteryObj.AddComponent(batteryType);
 
             // 6. Objetos Físicos para Empujar y Emitir Ruido
             for (int i = 0; i < 4; i++)
