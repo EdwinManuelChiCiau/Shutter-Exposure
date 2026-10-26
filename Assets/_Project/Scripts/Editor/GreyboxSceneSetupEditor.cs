@@ -9,6 +9,7 @@ using ShutterExposure.CameraSystem;
 using ShutterExposure.Interaction;
 using ShutterExposure.Audio;
 using ShutterExposure.UI;
+using UnityEngine.InputSystem.UI;
 
 namespace ShutterExposure.EditorScripts
 {
@@ -23,13 +24,21 @@ namespace ShutterExposure.EditorScripts
         [MenuItem("Shutter Exposure/Configurar Sala Greybox de Prueba", false, 1)]
         public static void SetupGreyboxRoom()
         {
-            // 1. Limpieza de elementos previos si existen
-            var existingEnv = GameObject.Find("--- ENTORNO GREYBOX ---");
-            if (existingEnv != null) Undo.DestroyObjectImmediate(existingEnv);
-            var existingPlayer = GameObject.Find("Player_Patient");
-            if (existingPlayer != null) Undo.DestroyObjectImmediate(existingPlayer);
-            var existingUI = GameObject.Find("--- UI CANVAS (HUD & PAUSA) ---");
-            if (existingUI != null) Undo.DestroyObjectImmediate(existingUI);
+            // 1. Limpieza exhaustiva de todas las copias previas en la escena
+            var allSceneObjects = Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include);
+            foreach (var obj in allSceneObjects)
+            {
+                if (obj == null) continue;
+                if (obj.name.Contains("ENTORNO GREYBOX") || 
+                    obj.name.Contains("Player_Patient") || 
+                    obj.name.Contains("UI CANVAS") ||
+                    obj.name.Contains("EventSystem") ||
+                    obj.name.Contains("Door_Interactable") ||
+                    obj.name.Contains("Battery_Pickup"))
+                {
+                    Object.DestroyImmediate(obj);
+                }
+            }
 
             // 2. Contenedores principales
             GameObject envRoot = new GameObject("--- ENTORNO GREYBOX ---");
@@ -191,12 +200,22 @@ namespace ShutterExposure.EditorScripts
 
         private static void SetupUI(GameObject player, CardiacSystem cardiac, StaminaSystem stamina, HandheldCamera handheld, PlayerInteraction interaction)
         {
-            // EventSystem
-            if (Object.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
+            // EventSystem configurado con el nuevo Input System (InputSystemUIInputModule)
+            var existingES = Object.FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>();
+            if (existingES == null)
             {
                 GameObject esObj = new GameObject("EventSystem");
                 esObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
-                esObj.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                esObj.AddComponent<InputSystemUIInputModule>();
+            }
+            else
+            {
+                var legacyModule = existingES.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+                if (legacyModule != null) Object.DestroyImmediate(legacyModule);
+                if (existingES.GetComponent<InputSystemUIInputModule>() == null)
+                {
+                    existingES.gameObject.AddComponent<InputSystemUIInputModule>();
+                }
             }
 
             // Canvas Principal

@@ -49,6 +49,9 @@ namespace ShutterExposure.Player
 
         private void Update()
         {
+            // No procesar rotación de cámara si el juego está pausado
+            if (Time.timeScale <= 0f) return;
+
             HandleRotation();
             HandleHeadBobAndTremor();
         }

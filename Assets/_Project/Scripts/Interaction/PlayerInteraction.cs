@@ -111,7 +111,7 @@ namespace ShutterExposure.Interaction
         private bool ReadInteractInput()
         {
             if (Keyboard.current != null && Keyboard.current.eKey.isPressed) return true;
-            if (Gamepad.current != null && (Gamepad.current.buttonWest.isPressed || Gamepad.current.buttonSouth.isPressed)) return true;
+            if (Gamepad.current != null && (Gamepad.current.buttonWest.isPressed || Gamepad.current.buttonSouth.isPressed || Gamepad.current.rightShoulder.isPressed)) return true;
             return false;
         }
 

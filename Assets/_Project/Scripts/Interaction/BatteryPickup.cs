@@ -54,28 +54,11 @@ namespace ShutterExposure.Interaction
             }
         }
 
-        public bool CanInteract(GameObject interactor)
-        {
-            var camera = interactor.GetComponentInChildren<HandheldCamera>();
-            if (camera != null)
-            {
-                if (camera.CurrentBatteries >= camera.MaxBatteries)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+        public bool CanInteract(GameObject interactor) => true;
 
-        public void OnInteractStart(GameObject interactor)
-        {
-            // Inicio de tensión (feedback visual o sonoro sutil)
-        }
+        public void OnInteractStart(GameObject interactor) { }
 
-        public void OnInteractCancel(GameObject interactor)
-        {
-            // Se canceló la interacción antes del segundo
-        }
+        public void OnInteractCancel(GameObject interactor) { }
 
         public void OnInteractComplete(GameObject interactor)
         {
@@ -84,7 +67,6 @@ namespace ShutterExposure.Interaction
             {
                 if (camera.TryAddBattery())
                 {
-                    // Destruir el objeto tras ser recolectado
                     Destroy(gameObject);
                 }
             }
